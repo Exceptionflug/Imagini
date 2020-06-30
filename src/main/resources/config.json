@@ -1,0 +1,11 @@
+{
+  "bindingAddress": "0.0.0.0",
+  "port": 8080,
+  "accounts": [
+    {
+      "redirectUrl": "http://localhost:8080/",
+      "address": "localhost:8080",
+      "name": "default"
+    }
+  ]
+}
