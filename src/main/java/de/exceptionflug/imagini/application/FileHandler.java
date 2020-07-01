@@ -40,6 +40,9 @@ public class FileHandler implements PageHandler<AbstractResponse> {
         if(!file.exists()) {
             return new NotFoundResponse(request.getHttpExchange().getRequestURI());
         }
+        if(file.isDirectory()) {
+            return new TextResponse("<h1>Imagini file server</h1><br><hl>&copy; Nico Britze 2020", "text/html", 200);
+        }
         try(FileInputStream fileInputStream = new FileInputStream(file)) {
             Account accessor = imaginiServer.getAccountByLastAccessAddress(request.getHttpExchange().getRemoteAddress().getHostString());
             if(accessor != null) {

@@ -1,6 +1,6 @@
-/.idea/
-/content/default/
-/logs/
-/target/
+/.idea/*
+/content/default/*
+/logs/*
+/target/*
 /config.json
 /imagini.iml
