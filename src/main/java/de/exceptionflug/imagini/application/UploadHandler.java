@@ -72,7 +72,7 @@ public class UploadHandler implements PageHandler<AbstractResponse> {
             bufferedOutputStream.write(data);
         }
 
-        account.setLastAccessAddress(request.getHttpExchange().getRemoteAddress().getHostString());
+        account.setLastAccessAddress(imaginiServer.getRemoteAddress(request.getHttpExchange()));
         imaginiServer.saveConfig();
         rewriteLoc(account.getRedirectUrl()+fileName, request.getHttpExchange());
         log.info(account.getName()+" uploaded file: "+fileName);
