@@ -3,11 +3,9 @@ package de.exceptionflug.imagini.application;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
 import de.exceptionflug.moon.Request;
+import de.exceptionflug.moon.elements.simple.MoonFooterElement;
 import de.exceptionflug.moon.handler.PageHandler;
-import de.exceptionflug.moon.response.AbstractResponse;
-import de.exceptionflug.moon.response.BinaryResponse;
-import de.exceptionflug.moon.response.NotFoundResponse;
-import de.exceptionflug.moon.response.TextResponse;
+import de.exceptionflug.moon.response.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.entity.ContentType;
 import sun.misc.IOUtils;
@@ -41,7 +39,7 @@ public class FileHandler implements PageHandler<AbstractResponse> {
             return new NotFoundResponse(request.getHttpExchange().getRequestURI());
         }
         if(file.isDirectory()) {
-            return new TextResponse("<h1>Imagini file server</h1><br><hl>&copy; Nico Britze 2020", "text/html", 200);
+            return new TextResponse("<h2>Imagini File Server</h2><br>Current account: "+account.getName()+"<hr><i>&copy; Nico Britze 2020</i>", "text/html", 200);
         }
         try(FileInputStream fileInputStream = new FileInputStream(file)) {
             Account accessor = imaginiServer.getAccountByLastAccessAddress(request.getHttpExchange().getRemoteAddress().getHostString());
