@@ -4,6 +4,7 @@ import com.google.common.collect.Ordering;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
 import de.exceptionflug.imagini.elements.GalleryDomElement;
+import de.exceptionflug.imagini.elements.PageBarDomElement;
 import de.exceptionflug.imagini.utils.FileUtils;
 import de.exceptionflug.moon.Request;
 import de.exceptionflug.moon.handler.PageHandler;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class GalleryHandler implements PageHandler<TextResponse> {
 
-    private static final int ITEMS_PER_PAGE = 50;
+    private static final int ITEMS_PER_PAGE = 20;
 
     private static final String GALLERY_TEMPLATE = FileUtils.getFileContents(
             ImaginiServer.class.getResourceAsStream("/html/gallery_template.html")
@@ -65,8 +66,12 @@ public class GalleryHandler implements PageHandler<TextResponse> {
         File dir = new File("content/"+account.getName());
         List<File> files = FILE_ORDERING.sortedCopy(Arrays.asList(dir.listFiles()));
 
+        int pageCount = (int) Math.ceil(files.size() / (double) ITEMS_PER_PAGE);
+        if(page > pageCount) {
+            page = pageCount;
+        }
         int startIndex = (page-1)*ITEMS_PER_PAGE;
-        int endIndex = Math.min(files.size(), startIndex + ITEMS_PER_PAGE - 1);
+        int endIndex = Math.min(files.size(), startIndex + ITEMS_PER_PAGE);
         for (int i = startIndex; i < endIndex; i++) {
             File child = files.get(i);
 
@@ -78,8 +83,8 @@ public class GalleryHandler implements PageHandler<TextResponse> {
         }
 
         out.replace("%gallery%", stringBuilder.toString());
-        out.replace("%page%", Integer.toString(page));
-        out.replace("%pageCount%", Integer.toString((int) Math.ceil(files.size() / (double) ITEMS_PER_PAGE)));
+        out.replace("%pageBar%", new PageBarDomElement(account.getRedirectUrl()+"gallery?page=%page%",
+                1, pageCount, page));
         return out;
     }
 
