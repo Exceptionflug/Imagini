@@ -11,6 +11,7 @@ public class Account {
     private String address;
     private String redirectUrl;
     private String accessToken;
+    private String passwordHash;
     private String lastAccessAddress;
 
 }
