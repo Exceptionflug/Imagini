@@ -2,6 +2,7 @@ package de.exceptionflug.imagini;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.net.httpserver.HttpExchange;
 import de.exceptionflug.imagini.application.FileHandler;
 import de.exceptionflug.imagini.application.GalleryHandler;
 import de.exceptionflug.imagini.application.UploadHandler;
@@ -96,6 +97,14 @@ public class ImaginiServer {
             System.out.println("Cannot save config");
             e.printStackTrace();
         }
+    }
+
+    public String getRemoteAddress(HttpExchange exchange) {
+        String xff = exchange.getRequestHeaders().getFirst("X-Forwarded-For");
+        if(xff == null) {
+            xff = exchange.getRemoteAddress().getHostString();
+        }
+        return xff;
     }
 
 }
