@@ -77,7 +77,7 @@ public class GalleryHandler implements PageHandler<TextResponse> {
 
             BasicFileAttributes basicFileAttributes = Files.readAttributes(child.toPath(), BasicFileAttributes.class);
             stringBuilder.append(new GalleryDomElement(account.getRedirectUrl()+child.getName(),
-                    account.getRedirectUrl()+child.getName(),
+                    account.getRedirectUrl()+child.getName()+"?logging=false",
                     DateFormat.getDateTimeInstance().format(new Date(basicFileAttributes.creationTime().toMillis())),
                     child.getName()));
         }

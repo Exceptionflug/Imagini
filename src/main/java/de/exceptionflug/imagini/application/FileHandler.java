@@ -34,19 +34,25 @@ public class FileHandler implements PageHandler<AbstractResponse> {
         if(account == null) {
             return new TextResponse("Account "+host+" not found", "text/plain", 404);
         }
-        File file = new File("content/"+account.getName()+request.getHttpExchange().getRequestURI());
+        File file = new File("content/"+account.getName()+request.getHttpExchange().getRequestURI().getPath());
         if(!file.exists()) {
             return new NotFoundResponse(request.getHttpExchange().getRequestURI());
         }
         if(file.isDirectory()) {
             return new TextResponse("<h2>Imagini File Server</h2><br>Current account: "+account.getName()+"<hr><i>&copy; Nico Britze 2020</i>", "text/html", 200);
         }
+        boolean logging = true;
+        if(request.getQueryParameter("logging") != null && request.getQueryParameter("logging").equalsIgnoreCase("false")) {
+            logging = false;
+        }
         try(FileInputStream fileInputStream = new FileInputStream(file)) {
-            Account accessor = imaginiServer.getAccountByLastAccessAddress(imaginiServer.getRemoteAddress(request.getHttpExchange()));
-            if(accessor != null) {
-                log.info(accessor.getName()+" ["+request.getHttpExchange().getRemoteAddress().getHostString()+"] accessed file "+file.getName()+" of account "+account.getName());
-            } else {
-                log.info("["+imaginiServer.getRemoteAddress(request.getHttpExchange())+"] accessed file "+file.getName()+" of account "+account.getName());
+            if(logging) {
+                Account accessor = imaginiServer.getAccountByLastAccessAddress(imaginiServer.getRemoteAddress(request.getHttpExchange()));
+                if(accessor != null) {
+                    log.info(accessor.getName()+" ["+request.getHttpExchange().getRemoteAddress().getHostString()+"] accessed file "+file.getName()+" of account "+account.getName());
+                } else {
+                    log.info("["+imaginiServer.getRemoteAddress(request.getHttpExchange())+"] accessed file "+file.getName()+" of account "+account.getName());
+                }
             }
             return new BinaryResponse(IOUtils.readFully(fileInputStream, -1, true), Files.probeContentType(file.toPath()));
         }
