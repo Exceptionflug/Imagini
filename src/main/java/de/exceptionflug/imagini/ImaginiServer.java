@@ -3,6 +3,7 @@ package de.exceptionflug.imagini;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+import de.exceptionflug.imagini.application.DeleteHandler;
 import de.exceptionflug.imagini.application.FileHandler;
 import de.exceptionflug.imagini.application.GalleryHandler;
 import de.exceptionflug.imagini.application.UploadHandler;
@@ -39,6 +40,10 @@ public class ImaginiServer {
         // Gallery
         webApplication.registerPageHandler("gallery", new GalleryHandler(this));
         webApplication.protect("gallery", new AccountBasedBasicAuthenticator(this));
+
+        // Delete requests
+        webApplication.registerPageHandler("delete\\/.*", new DeleteHandler(this));
+        webApplication.protect("delete", new AccountBasedBasicAuthenticator(this));
 
         log.info("Started imagini file server by Nico Britze");
     }
