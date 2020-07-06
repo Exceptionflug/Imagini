@@ -83,6 +83,9 @@ public class ImaginiServer {
 
     public Account getAccountByLastAccessAddress(String address) {
         for(Account account : configuration.getAccounts()) {
+            if(account.getLastAccessAddress() == null) {
+                continue;
+            }
             if(account.getLastAccessAddress().equalsIgnoreCase(address)) {
                 return account;
             }
