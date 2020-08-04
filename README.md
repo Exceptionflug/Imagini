@@ -55,9 +55,10 @@ In this example our service is hosting two accounts using two different domain n
 #### General
 Please make sure you are using http method PUT for your URL suffixing `/upload`. The request body must contain the file to be uploaded. The file name of the file is specified in the request header field `File-Name`. If an access token is configured for that account, please specify it using the header field `Access-Token`.
 #### ShareX
-Go to custom target settings an create a new custom upload target:
+Go to custom target settings and create a new custom upload target:
 ![Settings](https://img.exceptionflug.de/ShareX_NxvEquDFWe.png)
 #### Gallery
 As soon as an account have been created, it should be secured with a password. To do this, navigate to the gallery page of this account. You are prompted to fill in the authentication details.
 ![set password](https://img.exceptionflug.de/msedge_1FA5UeBUHd.png)
+
 As username enter the account name specified in the `config.json`. As password you can enter anything you want. This will set your password. If you want to reset your gallery password, just delete the `passwordHash` property from the account in the `config.json` file.
