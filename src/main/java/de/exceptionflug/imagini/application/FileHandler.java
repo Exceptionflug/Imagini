@@ -1,19 +1,18 @@
 package de.exceptionflug.imagini.application;
 
+import com.google.common.io.ByteStreams;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
 import de.exceptionflug.moon.Request;
-import de.exceptionflug.moon.elements.simple.MoonFooterElement;
 import de.exceptionflug.moon.handler.PageHandler;
-import de.exceptionflug.moon.response.*;
-import lombok.extern.log4j.Log4j2;
-import org.apache.http.entity.ContentType;
-import sun.misc.IOUtils;
-import sun.nio.ch.IOUtil;
-
+import de.exceptionflug.moon.response.AbstractResponse;
+import de.exceptionflug.moon.response.BinaryResponse;
+import de.exceptionflug.moon.response.NotFoundResponse;
+import de.exceptionflug.moon.response.TextResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class FileHandler implements PageHandler<AbstractResponse> {
@@ -54,7 +53,7 @@ public class FileHandler implements PageHandler<AbstractResponse> {
                     log.info("["+imaginiServer.getRemoteAddress(request.getHttpExchange())+"] accessed file "+file.getName()+" of account "+account.getName());
                 }
             }
-            return new BinaryResponse(IOUtils.readFully(fileInputStream, -1, true), Files.probeContentType(file.toPath()));
+            return new BinaryResponse(ByteStreams.toByteArray(fileInputStream), Files.probeContentType(file.toPath()));
         }
     }
 

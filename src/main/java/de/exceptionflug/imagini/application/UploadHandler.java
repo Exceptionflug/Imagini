@@ -1,5 +1,6 @@
 package de.exceptionflug.imagini.application;
 
+import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.HttpExchange;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
@@ -9,7 +10,6 @@ import de.exceptionflug.moon.response.AbstractResponse;
 import de.exceptionflug.moon.response.TextResponse;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.client.utils.URIBuilder;
-import sun.misc.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -67,7 +67,7 @@ public class UploadHandler implements PageHandler<AbstractResponse> {
         File file = new File("content/"+account.getName()+"/"+fileName);
         file.getParentFile().mkdirs();
         file.createNewFile();
-        byte[] data = IOUtils.readFully(request.getHttpExchange().getRequestBody(), -1, true);
+        byte[] data = ByteStreams.toByteArray(request.getHttpExchange().getRequestBody());
         try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             bufferedOutputStream.write(data);
         }

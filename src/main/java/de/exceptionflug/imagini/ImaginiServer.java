@@ -1,5 +1,6 @@
 package de.exceptionflug.imagini;
 
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
@@ -13,7 +14,6 @@ import de.exceptionflug.imagini.config.Configuration;
 import de.exceptionflug.moon.WebApplication;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import sun.misc.IOUtils;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -64,7 +64,7 @@ public class ImaginiServer {
             e.printStackTrace();
         }
         try(FileOutputStream fileOutputStream = new FileOutputStream(target)) {
-            fileOutputStream.write(IOUtils.readFully(ImaginiServer.class.getResourceAsStream("/"+resource), -1, true));
+            fileOutputStream.write(ByteStreams.toByteArray(ImaginiServer.class.getResourceAsStream("/" + resource)));
             fileOutputStream.flush();
         } catch (Exception e) {
             System.out.println("Cannot copy resource");
