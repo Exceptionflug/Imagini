@@ -12,6 +12,7 @@ import de.exceptionflug.moon.response.TextResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
@@ -64,9 +65,12 @@ public class GalleryHandler implements PageHandler<TextResponse> {
         }
 
         File dir = new File("content/"+account.getName());
-        List<File> files = FILE_ORDERING.sortedCopy(Arrays.asList(dir.listFiles()));
+        File[] filesInDir = dir.listFiles();
+        filesInDir = filesInDir == null ? new File[0] : filesInDir;
+        List<File> files = FILE_ORDERING.sortedCopy(Arrays.asList(filesInDir));
 
         int pageCount = (int) Math.ceil(files.size() / (double) ITEMS_PER_PAGE);
+        pageCount = pageCount == 0 ? 1 : pageCount;
         if(page > pageCount) {
             page = pageCount;
         }
