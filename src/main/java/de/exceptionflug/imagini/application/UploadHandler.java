@@ -76,7 +76,11 @@ public class UploadHandler implements PageHandler<AbstractResponse> {
         imaginiServer.saveConfig();
         rewriteLoc(account.getRedirectUrl()+fileName, request.getHttpExchange());
         log.info(account.getName()+" uploaded file: "+fileName);
-        return new TextResponse(account.getRedirectUrl()+fileName, "text/plain", 200);
+        return new TextResponse(account.getRedirectUrl()+htmlEncode(fileName), "text/plain", 200);
+    }
+
+    private String htmlEncode(String fileName) {
+        return fileName.replace(" ", "%20");
     }
 
     private void rewriteLoc(String target, HttpExchange httpExchange) {
