@@ -12,4 +12,3 @@ COPY --from=build /src/imagini/target/imagini-1.0-SNAPSHOT.jar /var/lib/imagini/
 EXPOSE 8080
 
 ENTRYPOINT /var/lib/imagini/entrypoint.sh
-
