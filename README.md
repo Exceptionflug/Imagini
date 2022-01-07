@@ -12,6 +12,24 @@ Imagini features a paginated and password protected gallery where you can access
 You can delete uploaded pictures using a delete link. The delete URL looks like this: `http://your-domain.com/delete/<filename>`. Your gallery password is needed to delete images.
 ## Installation
 Your server needs to run at least Java 8. Just simply run the imagini-server jar file. It will automatically create an example configuration.
+
+### Using Docker
+
+You can also use the provided docker image for easy deployment: https://hub.docker.com/r/exceptionflug/imagini
+
+docker-compose.yml:
+```yml
+version: "3.7"
+services:
+  imagini:
+    image: exceptionflug/imagini
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - "./data/imagini:/opt/imagini"
+```
+
 ## Configuration
 ### Server
 config.json:
