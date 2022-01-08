@@ -1,10 +1,10 @@
-FROM maven:3.6.3-openjdk-8-slim AS build
+FROM maven:3.8.1-openjdk-17-slim AS build
 
 WORKDIR /src/imagini
 COPY ./ ./
 RUN mvn clean package
 
-FROM openjdk:8-jre-slim
+FROM openjdk:17-slim
 
 WORKDIR /opt/imagini
 COPY ./entrypoint.sh /var/lib/imagini/entrypoint.sh
