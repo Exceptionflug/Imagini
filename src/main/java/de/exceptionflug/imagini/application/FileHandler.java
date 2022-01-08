@@ -21,8 +21,8 @@ import javax.imageio.ImageIO;
 @Log4j2
 public class FileHandler implements PageHandler<AbstractResponse> {
 
-    private static final int PREVIEW_HEIGHT = 250;
-    private static final int PREVIEW_WIDTH = 300;
+    private static final int PREVIEW_HEIGHT = 500;
+    private static final int PREVIEW_WIDTH = 600;
 
     private final ImaginiServer imaginiServer;
 
