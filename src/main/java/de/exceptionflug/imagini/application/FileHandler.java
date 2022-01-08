@@ -66,7 +66,7 @@ public class FileHandler implements PageHandler<AbstractResponse> {
 
     private AbstractResponse createPreview(File file) throws IOException {
         var mimeType = Files.probeContentType(file.toPath());
-        if (!mimeType.startsWith("image")) {
+        if (mimeType == null || !mimeType.startsWith("image")) {
             return new BinaryResponse(ImaginiServer.class.getResourceAsStream("/file.svg").readAllBytes(), "image/svg+xml");
         }
         if (!mimeType.equals("image/png")) {
