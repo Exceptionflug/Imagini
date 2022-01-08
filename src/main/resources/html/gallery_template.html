@@ -2,12 +2,14 @@
 <head>
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />
     <title>Gallery</title>
+    <link href="https://fonts.cdnfonts.com/css/bahnschrift" rel="stylesheet">
     <style>
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Bahnschrift', sans-serif;
         }
 
         body {
@@ -47,38 +49,37 @@
             display: inline-block;
             color: white;
             position: relative;
-            background-color: white;
+            background-color: #000;
+        }
+
+        .img-box img {
+            opacity: 1;
+            transition: opacity 300ms ease, transform 0.4s ease;
         }
 
         .caption {
             position: absolute;
             bottom: 5px;
             left: 20px;
+            right: 20px;
             opacity: 0.0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .transparent-box {
-            height: 250px;
-            width: 350px;
-            background-color:rgba(0, 0, 0, 0);
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: background-color 0.3s ease;
+            transition: transform 0.1s ease, opacity 0.1s ease;
+            text-shadow: 0 0 5px black;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .img-box:hover img {
             transform: scale(1.1);
-        }
-
-        .img-box:hover .transparent-box {
-            background-color:rgba(0, 0, 0, 0.5);
+            opacity: 0.6;
+            transition: opacity 300ms ease, transform 0.4s ease;
         }
 
         .img-box:hover .caption {
             transform: translateY(-20px);
             opacity: 1.0;
+            color: #fff;
         }
 
         .img-box:hover {
@@ -87,6 +88,7 @@
 
         .caption > p:nth-child(2) {
             font-size: 0.8em;
+            opacity: 0.7;
         }
 
         .opacity-low {
@@ -107,18 +109,25 @@
             padding: 8px 16px;
             text-decoration: none;
             background-color: #FFFFFF;
-            border-radius: 5px;
+            border-left: 1px outset black;
+        }
+
+        .pagination a:first-child {
+            border-radius: 5px 0 0 5px;
+            border-left: 0;
+        }
+
+        .pagination a:last-child {
+            border-radius: 0 5px 5px 0;
         }
 
         .pagination a.active {
-            background-color: #4CAF50;
+            background-color: #e65b06;
             color: white;
-            border-radius: 5px;
         }
 
         .pagination a:hover:not(.active) {
             background-color: #ddd;
-            border-radius: 5px;
         }
         
     </style>

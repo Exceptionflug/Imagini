@@ -5,12 +5,10 @@ import de.exceptionflug.moon.DomElement;
 public final class GalleryDomElement extends DomElement {
 
     private static final String TEMPLATE = " <div class=\"img-box\">\n" +
-            "        <img src=\"%src%\" alt=\"\" />\n" +
-            "        <div class=\"transparent-box\" onclick=\"window.location='%href%';\">\n" +
-            "            <div class=\"caption\">\n" +
-            "                <p>%title%</p>\n" +
-            "                <p class=\"opacity-low\">%description%</p>\n" +
-            "            </div>\n" +
+            "        <a href='%href%'><img src=\"%src%\" alt=\"\" /></a>\n" +
+            "        <div class=\"caption\">\n" +
+            "             <p>%title%</p>\n" +
+            "             <p class=\"opacity-low\">%description%</p>\n" +
             "        </div>\n" +
             "    </div>";
 
