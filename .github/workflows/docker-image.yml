@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Build & Push Action
+        uses: mr-smithers-excellent/docker-build-push@v5.6
+        with:
+          # Name of the Docker image
+          image: exceptionflug/imagini
+          # Tags override for Docker image
+          tags: latest
+          # Target Docker registry
+          registry: registry.hub.docker.com
+          # Docker registry username
+          username: ${{ secrets.DockerUsername }}
+          # Docker registry password
+          password: ${{ secrets.DockerPassword }}
