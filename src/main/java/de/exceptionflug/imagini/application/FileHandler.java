@@ -1,6 +1,5 @@
 package de.exceptionflug.imagini.application;
 
-import com.google.common.io.ByteStreams;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
 import de.exceptionflug.moon.Request;
@@ -9,13 +8,21 @@ import de.exceptionflug.moon.response.AbstractResponse;
 import de.exceptionflug.moon.response.BinaryResponse;
 import de.exceptionflug.moon.response.NotFoundResponse;
 import de.exceptionflug.moon.response.TextResponse;
-import java.io.File;
-import java.io.FileInputStream;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 import lombok.extern.log4j.Log4j2;
 
+import javax.imageio.IIOException;
+import javax.imageio.ImageIO;
+
 @Log4j2
 public class FileHandler implements PageHandler<AbstractResponse> {
+
+    private static final int PREVIEW_HEIGHT = 250;
+    private static final int PREVIEW_WIDTH = 300;
 
     private final ImaginiServer imaginiServer;
 
@@ -40,11 +47,11 @@ public class FileHandler implements PageHandler<AbstractResponse> {
         if(file.isDirectory()) {
             return new TextResponse("<h2>Imagini File Server</h2><br>Current account: "+account.getName()+"<hr><i>&copy; Nico Britze 2020</i>", "text/html", 200);
         }
-        boolean logging = true;
-        if(request.getQueryParameter("logging") != null && request.getQueryParameter("logging").equalsIgnoreCase("false")) {
-            logging = false;
+        boolean logging = request.getQueryParameter("logging") == null || !request.getQueryParameter("logging").equalsIgnoreCase("false");
+        if (request.getQueryParameter("preview") != null && request.getQueryParameter("preview").equalsIgnoreCase("true")) {
+            return createPreview(file);
         }
-        try(FileInputStream fileInputStream = new FileInputStream(file)) {
+        try (BufferedInputStream fileInputStream = new BufferedInputStream(new FileInputStream(file))) {
             if(logging) {
                 Account accessor = imaginiServer.getAccountByLastAccessAddress(imaginiServer.getRemoteAddress(request.getHttpExchange()));
                 if(accessor != null) {
@@ -53,8 +60,38 @@ public class FileHandler implements PageHandler<AbstractResponse> {
                     log.info("["+imaginiServer.getRemoteAddress(request.getHttpExchange())+"] accessed file "+file.getName()+" of account "+account.getName());
                 }
             }
-            return new BinaryResponse(ByteStreams.toByteArray(fileInputStream), Files.probeContentType(file.toPath()));
+            return new BinaryResponse(fileInputStream.readAllBytes(), Files.probeContentType(file.toPath()));
         }
+    }
+
+    private AbstractResponse createPreview(File file) throws IOException {
+        var mimeType = Files.probeContentType(file.toPath());
+        if (!mimeType.startsWith("image")) {
+            return new BinaryResponse(ImaginiServer.class.getResourceAsStream("/file.svg").readAllBytes(), "image/svg+xml");
+        }
+        if (!mimeType.equals("image/png")) {
+            return new BinaryResponse(Files.readAllBytes(file.toPath()), mimeType);
+        }
+        try {
+            var image = ImageIO.read(file);
+            if (image.getHeight() < PREVIEW_HEIGHT && image.getWidth() < PREVIEW_WIDTH) {
+                return new BinaryResponse(Files.readAllBytes(file.toPath()), mimeType);
+            }
+            double ratio = (double) image.getWidth() / image.getHeight();
+            image = resizeImage(image, (int) (PREVIEW_HEIGHT * ratio), PREVIEW_HEIGHT);
+            var out = new ByteArrayOutputStream();
+            ImageIO.write(image, file.getName().substring(file.getName().lastIndexOf(".") + 1), out);
+            return new BinaryResponse(out.toByteArray(), mimeType);
+        } catch (IIOException exception) {
+            return new BinaryResponse(Files.readAllBytes(file.toPath()), mimeType);
+        }
+    }
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        var resultingImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT);
+        var outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+        return outputImage;
     }
 
 }
