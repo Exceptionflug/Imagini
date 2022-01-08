@@ -1,6 +1,5 @@
 package de.exceptionflug.imagini.application;
 
-import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.HttpExchange;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
@@ -11,9 +10,7 @@ import de.exceptionflug.moon.response.TextResponse;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.client.utils.URIBuilder;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -67,9 +64,14 @@ public class UploadHandler implements PageHandler<AbstractResponse> {
         File file = new File("content/"+account.getName()+"/"+fileName);
         file.getParentFile().mkdirs();
         file.createNewFile();
-        byte[] data = ByteStreams.toByteArray(request.getHttpExchange().getRequestBody());
-        try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))) {
-            bufferedOutputStream.write(data);
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(request.getHttpExchange().getRequestBody())) {
+            try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+                byte[] data = new byte[2048];
+                int bytesRead;
+                while ((bytesRead = bufferedInputStream.read(data)) != -1) {
+                    bufferedOutputStream.write(data, 0, bytesRead);
+                }
+            }
         }
 
         account.setLastAccessAddress(imaginiServer.getRemoteAddress(request.getHttpExchange()));

@@ -15,7 +15,7 @@ public class AccountBasedBasicAuthenticator extends BasicAuthenticator {
     private Account account;
 
     public AccountBasedBasicAuthenticator(ImaginiServer imaginiServer) {
-        super("");
+        super("imagini");
         this.imaginiServer = imaginiServer;
     }
 
