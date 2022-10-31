@@ -29,17 +29,6 @@ public class GalleryHandler implements PageHandler<TextResponse> {
             ImaginiServer.class.getResourceAsStream("/html/gallery_template.html")
     );
 
-    private static final Ordering<File> FILE_ORDERING = Ordering.from((o1, o2) -> {
-        try {
-            BasicFileAttributes attributes1 = Files.readAttributes(o1.toPath(), BasicFileAttributes.class);
-            BasicFileAttributes attributes2 = Files.readAttributes(o2.toPath(), BasicFileAttributes.class);
-            return Long.compare(attributes2.creationTime().toMillis(), attributes1.creationTime().toMillis());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    });
-
     private final ImaginiServer imaginiServer;
 
     public GalleryHandler(ImaginiServer imaginiServer) {
@@ -67,7 +56,7 @@ public class GalleryHandler implements PageHandler<TextResponse> {
         File dir = new File("content/"+account.getName());
         File[] filesInDir = dir.listFiles();
         filesInDir = filesInDir == null ? new File[0] : filesInDir;
-        List<File> files = FILE_ORDERING.sortedCopy(Arrays.asList(filesInDir));
+        List<File> files = FileUtils.getFileOrdering().sortedCopy(Arrays.asList(filesInDir));
 
         int pageCount = (int) Math.ceil(files.size() / (double) ITEMS_PER_PAGE);
         pageCount = pageCount == 0 ? 1 : pageCount;

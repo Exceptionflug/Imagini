@@ -4,14 +4,12 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import de.exceptionflug.imagini.application.DeleteHandler;
-import de.exceptionflug.imagini.application.FileHandler;
-import de.exceptionflug.imagini.application.GalleryHandler;
-import de.exceptionflug.imagini.application.UploadHandler;
+import de.exceptionflug.imagini.application.*;
 import de.exceptionflug.imagini.auth.AccountBasedBasicAuthenticator;
 import de.exceptionflug.imagini.config.Account;
 import de.exceptionflug.imagini.config.Configuration;
 import de.exceptionflug.moon.WebApplication;
+import de.exceptionflug.moon.rest.RestApplication;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -23,12 +21,12 @@ import java.net.InetSocketAddress;
 public class ImaginiServer {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final WebApplication webApplication;
+    private final RestApplication webApplication;
     private final Configuration configuration;
 
     private ImaginiServer() throws IOException {
         configuration = gson.fromJson(new FileReader("config.json"), Configuration.class);
-        webApplication = WebApplication.quickStart(new InetSocketAddress(configuration.getBindingAddress(),
+        webApplication = RestApplication.quickStart(new InetSocketAddress(configuration.getBindingAddress(),
                 configuration.getPort()), 128, "/");
 
         // Uploader
@@ -39,7 +37,9 @@ public class ImaginiServer {
 
         // Gallery
         webApplication.registerPageHandler("gallery", new GalleryHandler(this));
+        webApplication.registerPageHandler("api/gallery", new GalleryApiHandler(this));
         webApplication.protect("gallery", new AccountBasedBasicAuthenticator(this));
+        webApplication.protect("api/gallery", new AccountBasedBasicAuthenticator(this));
 
         // Delete requests
         webApplication.registerPageHandler("delete\\/.*", new DeleteHandler(this));
