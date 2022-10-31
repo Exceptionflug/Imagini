@@ -1,5 +1,6 @@
 package de.exceptionflug.imagini.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.exceptionflug.imagini.ImaginiServer;
 import de.exceptionflug.imagini.config.Account;
 import de.exceptionflug.imagini.utils.FileUtils;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class GalleryApiHandler implements PageHandler<AbstractResponse> {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final ImaginiServer imaginiServer;
 
     public GalleryApiHandler(ImaginiServer imaginiServer) {
@@ -37,9 +39,12 @@ public class GalleryApiHandler implements PageHandler<AbstractResponse> {
         filesInDir = filesInDir == null ? new File[0] : filesInDir;
         List<File> files = FileUtils.getFileOrdering().sortedCopy(Arrays.asList(filesInDir));
 
-        return new JsonResponse<>(files.stream()
+        JsonResponse<List<String>> response = new JsonResponse<>(files.stream()
                 .map(File::getName)
                 .collect(Collectors.toList()));
+        response.serialize(objectMapper);
+
+        return response;
     }
 
 }
