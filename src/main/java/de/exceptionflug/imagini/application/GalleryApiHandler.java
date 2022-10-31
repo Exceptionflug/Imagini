@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GalleryApiHandler implements PageHandler<JsonResponse<List<String>>> {
+public class GalleryApiHandler implements PageHandler<AbstractResponse> {
 
     private final ImaginiServer imaginiServer;
 
@@ -23,7 +23,7 @@ public class GalleryApiHandler implements PageHandler<JsonResponse<List<String>>
     }
 
     @Override
-    public AbstractResponse handle(JsonResponse<List<String>> listJsonResponse, Request request) throws Exception {
+    public AbstractResponse handle(AbstractResponse listJsonResponse, Request request) throws Exception {
         String host = request.getHttpExchange().getRequestHeaders().getFirst("Host");
         if(host == null) {
             return new TextResponse("Header fields 'Host' or 'Account' not present", "text/plain", 400);
