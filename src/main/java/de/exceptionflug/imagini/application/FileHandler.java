@@ -47,7 +47,7 @@ public class FileHandler implements PageHandler<AbstractResponse> {
         if(file.isDirectory()) {
             return new TextResponse("<h2>Imagini File Server</h2><br>Current account: "+account.getName()+"<hr><i>&copy; Nico Britze 2020</i>", "text/html", 200);
         }
-        boolean logging = request.getQueryParameter("logging") == null || !request.getQueryParameter("logging").equalsIgnoreCase("false");
+        boolean logging = (request.getQueryParameter("logging") == null || !request.getQueryParameter("logging").equalsIgnoreCase("false")) || account.isDisallowLogDisable();
         if (request.getQueryParameter("preview") != null && request.getQueryParameter("preview").equalsIgnoreCase("true")) {
             return createPreview(file);
         }

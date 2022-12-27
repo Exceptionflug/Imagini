@@ -13,5 +13,6 @@ public class Account {
     private String accessToken;
     private String passwordHash;
     private String lastAccessAddress;
+    private boolean disallowLogDisable;
 
 }

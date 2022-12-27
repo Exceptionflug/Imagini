@@ -41,10 +41,6 @@ public class ImaginiServer {
         webApplication.protect("gallery", new AccountBasedBasicAuthenticator(this));
         webApplication.protect("api/gallery", new AccountBasedBasicAuthenticator(this));
 
-        // Delete requests
-        webApplication.registerPageHandler("delete\\/.*", new DeleteHandler(this));
-        webApplication.protect("delete", new AccountBasedBasicAuthenticator(this));
-
         log.info("Started imagini file server by Nico Britze");
     }
 
