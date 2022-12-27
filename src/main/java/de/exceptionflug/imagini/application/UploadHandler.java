@@ -13,6 +13,7 @@ import org.apache.http.client.utils.URIBuilder;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 @Log4j2
@@ -61,7 +62,12 @@ public class UploadHandler implements PageHandler<AbstractResponse> {
             return new TextResponse("Header field 'File-Name' not present", "text/plain", 400);
         }
 
-        File file = new File("content/"+account.getName()+"/"+fileName);
+        String normalizedPath = Paths.get(fileName).normalize().toString();
+        String base = new File("content/" + account.getName()).getCanonicalPath();
+        File file = new File(base, normalizedPath);
+        if (!file.getCanonicalPath().startsWith(base)) {
+            return new TextResponse("Header field 'File-Name' not present", "text/plain", 400);
+        }
         file.getParentFile().mkdirs();
         file.createNewFile();
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(request.getHttpExchange().getRequestBody())) {
