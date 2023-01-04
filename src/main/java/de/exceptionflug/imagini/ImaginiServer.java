@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.util.Locale;
 
 @Getter
 @Log4j2
@@ -70,7 +71,10 @@ public class ImaginiServer {
 
     public Account getAccountByAddress(String address) {
         for(Account account : configuration.getAccounts()) {
-            if(account.getAddress().equalsIgnoreCase(address)) {
+            if (account.getAddress().equalsIgnoreCase(address.toLowerCase(Locale.ROOT))) {
+                return account;
+            }
+            if (account.getAddresses().contains(address.toLowerCase(Locale.ROOT))) {
                 return account;
             }
         }
